@@ -8,4 +8,27 @@ use Illuminate\Database\Eloquent\Model;
 class Account extends Model
 {
     use HasFactory;
+
+    protected $fillable=[
+        'id',
+        'felhnev',
+        'password',
+        'chategoryid',
+    ];
+    protected $primaryKey='id';
+
+    public function userchategory()
+    {
+        return $this->belongsTo(Userchategory::class);
+    }
+
+    public function dentist()
+    {
+        return $this->hasOne(Dentist::class);
+    }
+
+    public function assistant()
+    {
+        return $this->hasOne(Assistant::class);
+    }
 }

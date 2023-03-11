@@ -5,12 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Patients extends Model
+class ApOp extends Model
 {
     use HasFactory;
 
     public function appointment()
     {
-        return $this->hasMany(Appointment::class);
+        return $this->belongsToMany(Appointment::class);
+    }
+
+    public function operation()
+    {
+        return $this->belongsToMany(Operation::class);
     }
 }

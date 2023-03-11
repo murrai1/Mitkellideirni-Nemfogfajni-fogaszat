@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Userchategory extends Model
 {
     use HasFactory;
+
+    public function account()
+    {
+        return $this->hasMany(Account::class);
+    }
 }

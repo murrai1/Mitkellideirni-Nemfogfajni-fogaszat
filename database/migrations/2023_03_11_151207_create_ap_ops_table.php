@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ap-_ops', function (Blueprint $table) {
+        Schema::create('ap_ops', function (Blueprint $table) {
             $table->integer("appointmentid");
             $table->integer("operationid");
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ap-_ops');
+        Schema::dropIfExists('ap_ops');
     }
 };
