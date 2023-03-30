@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('accounts', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements("id");
             $table->string("username");
             $table->string("password");
-            $table->integer("chategoryid");
+            $table->unsignedBigInteger("chategoryid");
 
             $table->foreign("chategoryid")->references("id")->on("userchategories")->onDelete("cascade")->onUpdate("cascade");
         });
