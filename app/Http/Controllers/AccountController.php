@@ -20,7 +20,7 @@ class AccountController extends Controller
 
             $prefix = '$2y$';
             $cost = '10';
-            $salt = '$mitkellideirnikerdojel$';
+            $salt = '$mitkellideirnikerdojeltesztvezereltszoft$';
             $blowFishPrefix = $prefix.$cost.$salt;
             $hash = crypt( $password, $blowFishPrefix);
 
