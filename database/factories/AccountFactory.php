@@ -29,7 +29,7 @@ class AccountFactory extends Factory
 
             "username" =>  $this->faker->userName(),
             "password" => $hash,
-            "chategoryid" => $this->faker->numberBetween($min = 1, $max = 2),
+            "chategoryid" => 2 //$this->faker->numberBetween($min = 1, $max = 2),
         ];
     }
 }

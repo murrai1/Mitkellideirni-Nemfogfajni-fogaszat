@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("username");
             $table->string("password");
             $table->unsignedBigInteger("chategoryid");
+            $table->timestamps();
 
             $table->foreign("chategoryid")->references("id")->on("userchategories")->onDelete("cascade")->onUpdate("cascade");
         });
