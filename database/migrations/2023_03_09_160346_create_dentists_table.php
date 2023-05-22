@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dentists', function (Blueprint $table) {
-            $table->id();
-            $table->integer("accountid");
+            $table->bigIncrements("id");
+            $table->unsignedBigInteger("accountid");
             $table->string("name");
 
             $table->foreign("accountid")->references("id")->on("accounts")->onDelete("cascade")->onUpdate("cascade");

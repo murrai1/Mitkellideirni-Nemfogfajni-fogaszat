@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ap_ops', function (Blueprint $table) {
-            $table->integer("appointmentid");
-            $table->integer("operationid");
+            $table->unsignedBigInteger("appointmentid");
+            $table->unsignedBigInteger("operationid");
 
             $table->foreign("appointmentid")->references("id")->on("appointments")->onDelete("cascade")->onUpdate("cascade");
             $table->foreign("operationid")->references("id")->on("operations")->onDelete("cascade")->onUpdate("cascade");
