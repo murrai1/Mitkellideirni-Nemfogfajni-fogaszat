@@ -2,39 +2,42 @@
 
 @section('content')
 <h1>Új időpont felvétele</h1>
-<form method="post" action = "">
-@csrf
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="inputEmail4">Időpont</label>
-      <input type="datetime-local" class="form-control" id="inputEmail4" placeholder="Dátum">
-    </div>
-    <!--
-      lehet nem autoincrement az appointment id
+<h4>{{$userId}}</h4>
+<div class = "col-sm-6">
+  <form method="post" action = "">
+    @csrf
+    <div class="form-row">
       <div class="form-group col-md-6">
-        <label for="inputPassword4">Beavatkozás id</label>
-        <input type="text" class="form-control" id="inputPassword4" placeholder="Password">
+        <label for="inputEmail4">Időpont</label>
+        <input type="datetime-local" class="form-control" id="idő" name="idő">
       </div>
-    -->
-  </div>
-  <div class="form-row">
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <input type="hidden" class="form-control" id="dent" name ="dent" value ="{{$userId}}">
+      </div>
+    </div>
+    <div class="form-row">
     <div class="form-group col-md-4">
-      <label for="inputState">Eljárás</label>
-      <select id="inputState" class="form-control">
-        <option selected>Choose...</option>
-        <option>...</option>
-        <option>....</option>
+      <label for="inputState">Páciens Tajszáma</label>
+      <select id="taj" name ="taj" class="form-control">
+        <option selected></option>
+        @foreach($pid as $p)
+        <option>{{$p['id']}}</option>
+        @endforeach
       </select>
     </div>
     <div class="form-group col-md-4">
-      <label for="inputState">Páciens Tajszáma</label>
-      <select id="inputState" class="form-control">
-        <option selected>Choose...</option>
-        <option>...</option>
-        <option>....</option>
+      <label for="inputState">Eljárás</label>
+      <select id="op" name="op" class="form-control">
+        <option selected></option>
+        @foreach($oname as $o)
+        <option>{{$o['name']}}</option>
+        @endforeach
       </select>
     </div>
   </div>
   <button type="submit" class="btn btn-primary">Rögzítés</button>
 </form>
+</div>
 @stop

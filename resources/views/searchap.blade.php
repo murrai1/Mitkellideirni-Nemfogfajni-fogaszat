@@ -3,40 +3,44 @@
 @section('content')
 <h2>Időpont keresése</h2>
 <div class="col-sm-6">
-    <form>
+    <form method="post" action="">
+        @csrf
         <div class="form-group">
             <label for="formGroupExampleInput">Example label</label>
-            <input type="date" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+            <input type="date" class="form-control" id="date" name="date">
         </div>
         <button type="submit" class="btn btn-primary">Keresés</button>
     </form>
 </div>
-<h2>Időpont vizsgálata</h2>
-<div class="col-sm-6">
-    <form>
-        <div class="form-group col-md-4">
-            <label for="inputState">Vizsgálandó időpont</label>
-            <select id="inputState" class="form-control">
-                <option selected>Choose...</option>
-                <option>...</option>
-                <option>....</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Kiválaszt</button>
-    </form>
-</div>
 <h2>Időpontok</h2>
-<table border="1">
-<tr>
-        <td>Dátum</td>
-        <td>Páciens id</td>
-    </tr>
+@if(Session::get('Állapot'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  {{Session::get('Állapot')}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+@endif
+<table class="table">
+    <thead>
 
-    @foreach($data as $d)
-    <tr>
-        <td>{{$d['date']}}</td>
-        <td>{{$d['patientid']}}</td>
-    </tr>
-    @endforeach
+        <tr>
+            <td>Dátum</td>
+            <td>Páciens id</td>
+            <td>Időpont részletei</td>
+        </tr>
+        
+    </thead>
+    <tbody>
+        @foreach($data as $d)
+        <tr>
+            <td>{{$d['date']}}</td>
+            <td>{{$d['patientid']}}</td>
+            <td>
+            <a href="/infap/{{$d->id}}"><i class="fa fa-arrow-right"></i></a>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>    
 </table>
 @stop

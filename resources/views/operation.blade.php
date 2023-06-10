@@ -1,66 +1,37 @@
 @extends('layout')
 
 @section('content')
-<h2>Beavatkozás hozzáadása</h2>
-<div class="col-sm-6">
-    <form>
-        <div class="form-group">
-            <label for="formGroupExampleInput">Név</label>
-            <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Név">
-        </div>
-        <div class="form-group">
-            <label for="formGroupExampleInput">Időtartam(perc)</label>
-            <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Születési hely">
-        </div>
-        <div class="form-group">
-            <label for="formGroupExampleInput">Ár</label>
-            <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Születési dátum">
-        </div>
-        <button type="submit" class="btn btn-primary">Felvétel</button>
-    </form>
-</div>
-<h2>Beavatkozás törlése</h2>
-<div class="col-sm-6">
-    <form>
-        <div class="form-group col-md-4">
-            <label for="inputState">Törölni kívánt beavatkozás</label>
-            <select id="inputState" class="form-control">
-                <option selected>Choose...</option>
-                <option>...</option>
-                <option>....</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Törlés</button>
-    </form>
-</div>
-<h2>Beavatkozás módosítása</h2>
-<div class="col-sm-6">
-    <form>
-        <div class="form-group col-md-4">
-            <label for="inputState">Módosítandó beavatkozás</label>
-            <select id="inputState" class="form-control">
-                <option selected>Choose...</option>
-                <option>...</option>
-                <option>....</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Kiválaszt</button>
-    </form>
-</div>
 <h2>Beavatkozások</h2>
-<table border="1">
-<tr>
-        <td>Név</td>
-        <td>Időtartam</td>
-        <td>Ár</td>
+@if(Session::get('Állapot'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  {{Session::get('Állapot')}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+@endif
+<table class="table">
+<thead>
+    <tr>
+        <th scope="col">Név</td>
+        <th scope="col">Időtartam</td>
+        <th scope="col">Ár</td>
+        <th>Módosítások</td>
     </tr>
-
+</thead>
+<tbody>
     @foreach($data as $d)
     <tr>
-        <td>{{$d['name']}}</td>
-        <td>{{$d['duration']}}</td>
-        <td>{{$d['price']}}</td>
+        <th scope="col">{{$d->name}}</th>
+        <td>{{$d->duration}}</td>
+        <td>{{$d->price}}</td>
+        <td>
+            <a href="/delop/{{$d->id}}"><i class="fa fa-trash"></i></a>
+            <a href="/edop/{{$d->id}}"><i class="fa fa-edit"></i></a>
+        </td>
     </tr>
     @endforeach
+</tbody>
 </table>
+
 @stop
