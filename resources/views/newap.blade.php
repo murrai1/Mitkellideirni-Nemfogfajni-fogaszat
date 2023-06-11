@@ -2,7 +2,14 @@
 
 @section('content')
 <h1>Új időpont felvétele</h1>
-<h4>{{$userId}}</h4>
+@if(Session::get('Állapot'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{Session::get('Állapot')}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
 <div class = "col-sm-6">
   <form method="post" action = "">
     @csrf

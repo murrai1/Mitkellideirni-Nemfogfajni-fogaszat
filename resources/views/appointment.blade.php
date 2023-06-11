@@ -35,9 +35,9 @@
         </div>
         <button type="submit" class="btn btn-primary">Felvétel</button>
         <h4>Időpont során elvégzendő beavatkozások</h4>
-        @if(Session::get('succes'))
+        @if(Session::get('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{Session::get('succes')}}
+            {{Session::get('success')}}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>

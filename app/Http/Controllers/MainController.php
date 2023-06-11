@@ -74,28 +74,49 @@ class MainController extends Controller
         session()->flash('Állapot', $pay);
         return redirect()->route('infap', ['id' => $id]);
     }
-    public function otoa($id, Request $req){
-        if(session('user')){
+
+    public function otoa($id, Request $req)
+    {
+        if (session('user')) {
             view()->share('userId', Session::get('user')['id']);
         }
-        if($req->input('op')!= null){
-            $opid = Operation::where('name', $req->input('op'))->value('id');
+        
+        $currentAppointment = Appointment::find($id);
+        
+        $currentAppointmentDate = Carbon::parse($currentAppointment->date);
+        
+        $currentAppointmentEndTime = $currentAppointmentDate->copy();
+        $assignedOperations = ApOp::where('appointmentid', $id)->pluck('operationid');
+        foreach ($assignedOperations as $operationId) {
+            $operationDuration = Operation::where('id', $operationId)->value('duration');
+            $currentAppointmentEndTime->addMinutes($operationDuration);
+        }
+        
+        $selectedOperation = $req->input('op');
+        $selectedOperationDuration = Operation::where('name', $selectedOperation)->value('duration');
+        
+        $nextAppointmentStartTime = Appointment::where('dentistid', $currentAppointment->dentistid)
+        ->where('date', '>', $currentAppointment->date)
+        ->min('date');
+        
+        $opStartTime = $nextAppointmentStartTime
+        ? Carbon::parse($nextAppointmentStartTime)->subMinutes($selectedOperationDuration + 9)
+        : Carbon::parse('17:00')->subMinutes($selectedOperationDuration + 9);
+        
+        if ($opStartTime->gte($currentAppointmentEndTime)) {
+            $opid = Operation::where('name', $selectedOperation)->value('id');
             $apop = new ApOp;
-            $apop->appointmentid=$id;
-            $apop->operationid=$opid;
+            $apop->appointmentid = $id;
+            $apop->operationid = $opid;
             $apop->save();
-            $req->session()->flash('succes', 'Beavatkozás sikeresen hozzáadva');
-            
+            $req->session()->flash('success', 'Beavatkozás sikeresen hozzáadva');
+        } else {
+            $req->session()->flash('fail', 'A beavatkozás ütközik az aktuális időponttal vagy meghaladja a maximális időtartamot.');
         }
-        else
-        {
-            $req->session()->flash('fail', 'Beavatkozás hozzáadása sikertelen');
-        }
+        
         return redirect()->route('infap', ['id' => $id]);
     }
-    /*
-    */
-
+    /**/
     public function app(){
         if(session('user')){
             view()->share('userId', Session::get('user')['id']);
@@ -123,31 +144,57 @@ class MainController extends Controller
         }
     }
 
-    public function newap(Request $req){
-        if(session('user')){
+    public function newap(Request $req)
+    {
+        if (session('user')) {
             view()->share('userId', Session::get('user')['id']);
         }
-
-        $apid = Appointment::orderBy('id', 'desc')->value('id');
-        $num = $apid + 1;
-        $opid = Operation::where('name', $req->input('op'))->first();
-        if($req->input('idő')==null || $req->input('taj')==null || $req->input('op')==null){
+        
+        $apStartTime = Carbon::parse($req->input('idő'));
+        $selectedOperation = $req->input('op');
+        $selectedOperationDuration = Operation::where('name', $selectedOperation)->value('duration');
+        $selectedOperationId = Operation::where('name', $selectedOperation)->value('id');
+        $userId = Session::get('user')['id'];
+        
+        $appointmentEndTime = $apStartTime->copy()->addMinutes($selectedOperationDuration);
+        
+        if ($appointmentEndTime->gte($apStartTime->copy()->setHour(17)->setMinute(0)->setSecond(0))) {
+            $req->session()->flash('Állapot', 'Az időpont meghaladja a maximális időtartamot.');
             return redirect('addap');
         }
-        else{
-            $ap = new Appointment;
-            $ap->date=$req->input('idő');
-            $ap->patientid=$req->input('taj');
-            $ap->dentistid=$req->input('dent');
-            $ap->save();
-            $ao = new ApOp;
-            $ao->operationid=$opid->id;
-            $ao->appointmentid=$num;
-            $ao->save();
-            $req->session()->flash('Állapot', 'Időpont sikeresen rögzítve');
-            return redirect('searchap');
+        
+        $appointments = Appointment::where('dentistid', $userId)->get();
+        
+        foreach ($appointments as $appointment) {
+            $existingStartTime = Carbon::parse($appointment->date);
+            
+            $existingEndTime = $existingStartTime->copy()->addMinutes($appointment->duration)->addMinutes(10);
+            
+            if (
+                ($apStartTime >= $existingStartTime && $apStartTime < $existingEndTime) ||
+                ($appointmentEndTime > $existingStartTime && $appointmentEndTime <= $existingEndTime) ||
+                ($apStartTime <= $existingStartTime && $appointmentEndTime >= $existingEndTime)
+                ) {
+                    $req->session()->flash('Állapot', 'Az időpont ütközik egy másik időponttal.');
+                    return redirect('addap');
+            }
         }
+
+        $ap = new Appointment;
+        $ap->date = $apStartTime;
+        $ap->patientid = $req->input('taj');
+        $ap->dentistid = $req->input('dent');
+        $ap->save();
+            
+        $ao = new ApOp;
+        $ao->operationid = $selectedOperationId;
+        $ao->appointmentid = $ap->id;
+        $ao->save();        
+        $req->session()->flash('Állapot', 'Időpont sikeresen rögzítve');
+        return redirect('searchap');
     }
+        
+
     //____________________________________________________________________________________________________________________________________________________
     //beavatkozások
     public function op(){
